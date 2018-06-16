@@ -21,7 +21,6 @@ public class Connection extends Thread {
 
     Connection(Socket ss, File file) {
         ReqIP = ss.getRemoteSocketAddress().toString();
-        //get properties value
         try {
             this.file = file;
             conLogger.info("Connections established on: " + InetAddress.getLocalHost() + ":" + ss.getLocalPort());
@@ -51,7 +50,6 @@ public class Connection extends Thread {
             fis.close();
         } catch (IOException e) {
             conLogger.log(Level.SEVERE, "File wasn't found!", e);
-
             w.println("HTTP/1.1 404 Not Found");
             w.println("Server: MyServer");
             w.println("Connection: close");
@@ -72,7 +70,7 @@ public class Connection extends Thread {
                 if (!line.isEmpty()) tempLine.add(NextLine + line);
                 if (line.startsWith("GET")) {
                     StringTokenizer token = new StringTokenizer(line);
-                    String reqFile = token.nextToken();
+                    String reqFile;
                     reqFile = token.nextToken();
                     reqFile = reqFile.substring(1);
                     conLogger.info(ReqIP + " requested file: " + reqFile);
@@ -96,11 +94,10 @@ public class Connection extends Thread {
 
 
     private String contentType(String FileName) {
-        //What filetype is the requested file?
+
         if (FileName.endsWith(".htm") || FileName.endsWith(".html")) return "text/html";
         if (FileName.endsWith(".jpg") || FileName.endsWith(".jpeg") || FileName.endsWith(".JPG") || FileName.endsWith(".JPEG"))
             return "image/jpeg";
-        if (FileName.endsWith(".gif")) return "image/gif";
         if (FileName.endsWith(".ico")) return "image/ico";
         return "application/octet-stream";
     }
@@ -113,7 +110,6 @@ public class Connection extends Thread {
                 System.out.println("Sending file: " + fileToSend.getAbsolutePath() + " to " + ReqIP);
                 conLogger.info("Sending file: " + fileToSend.getAbsolutePath() + " to " + ReqIP);
                 String content = contentType(new ServerConfigReader().getFileName());
-
                 ou.writeBytes("HTTP/1.1 200 OK" + NextLine);
                 ou.writeBytes("Server: MyServer" + NextLine);
                 ou.writeBytes("Connection: close");
@@ -122,7 +118,7 @@ public class Connection extends Thread {
                 sendBytes(fileToSend);
                 conLogger.info("file was completely send");
             }
-            if (!(fileToSend.exists())) {
+            else {
                 System.out.println("Requested file " + fileToSend.getAbsolutePath() + " not found, throwing 404");
                 conLogger.log(Level.SEVERE, "Requested file " + fileToSend.getAbsolutePath() + " not found, throwing 404");
                 w.println("HTTP/1.1 404 Not Found");
@@ -130,7 +126,7 @@ public class Connection extends Thread {
                 w.println("Connection: close");
                 w.println("Content-Type: text/html");
                 w.println("");
-                w.println("<html> <head> <title> Error 404: Site not found </title> </head> <body bgcolor=red> Error 404: Site not found </body> </html>");
+                w.println("<html> <head> <title> Error 404: Site not found </title> </head> <body bgcolor=red> Error 404: Page not found </body> </html>");
                 conLogger.info("Connection to " + ReqIP + " closed");
                 w.close();
             }

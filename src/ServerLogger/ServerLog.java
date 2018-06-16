@@ -14,23 +14,14 @@ public class ServerLog {
     static public FileHandler fileHTML;
 
     static public void setup(File dirName, String pattern, String outputFormat) throws IOException {
-
-
-
-        // get the global logger to configure it
         Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
-        // suppress the logging output to the console
         Logger rootLogger = Logger.getLogger("");
         Handler[] handlers = rootLogger.getHandlers();
         if (handlers[0] instanceof ConsoleHandler) {
             rootLogger.removeHandler(handlers[0]);
         }
-
         logger.setLevel(Level.ALL);
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
         String date = simpleDateFormat.format(new Date());
         System.out.println("Current/Startdate: " + date);
 
@@ -48,8 +39,6 @@ public class ServerLog {
             fileHTML.setFormatter(formatterHTML);
             logger.addHandler(fileHTML);
         }
-
-
     }
 }
 

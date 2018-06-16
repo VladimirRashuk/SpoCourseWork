@@ -9,13 +9,10 @@ import java.util.Properties;
 public class ServerConfigReader {
 
     private InputStream inputStream;
-
     private int Port;
     private String FileName;
     private String DocFolder;
-    private String HTMLFolder;
-    private int MaxLogCount;
-    private String ExceptionDir;
+    private String Folder;
     private String LogFolder;
     private String LogPattern;
     private String LogOutFormat;
@@ -34,18 +31,14 @@ public class ServerConfigReader {
                 throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
             }
 
-            //Date time = new Date(System.currentTimeMillis());
 
-            // get the property value and print it out
             String portTemp = prop.getProperty("port");
             Port = Integer.parseInt(portTemp);
             FileName = prop.getProperty("fileName");
             DocFolder = prop.getProperty("docFolder");
-            HTMLFolder = prop.getProperty("htmlFolder");
+            Folder = prop.getProperty("Folder");
             LogFolder = prop.getProperty("logFolder");
-            String maxLogCount = prop.getProperty("maxLogCount");
-            MaxLogCount = Integer.parseInt(maxLogCount);
-            ExceptionDir = prop.getProperty("exceptionsFolder");
+
             LogPattern = prop.getProperty("logPattern");
             LogOutFormat = prop.getProperty("logOutFormat");
 
@@ -61,21 +54,6 @@ public class ServerConfigReader {
 
     }
 
-    public boolean checkLogCount(int maxLogCount) {
-        File logDir = new File(DocFolder + File.separator + "Logs");
-        if (logDir.listFiles().length > maxLogCount) {
-            int count = logDir.listFiles().length;
-            for (File file : logDir.listFiles()) {
-                if (count > maxLogCount) {
-                    file.delete();
-                    count--;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private void checkExists(File logFolder) {
         if (!(logFolder.exists())) {
@@ -87,7 +65,7 @@ public class ServerConfigReader {
     }
 
     public File getFile() {
-        return new File(DocFolder + File.separator + getHtmlFolder() + File.separator + FileName);
+        return new File(DocFolder + File.separator + getFolder() + File.separator + FileName);
     }
 
     public int getPort() {
@@ -98,20 +76,8 @@ public class ServerConfigReader {
         return FileName;
     }
 
-    public String getHtmlFolder() {
-        return HTMLFolder;
-    }
-
-    public String getDocFolder() {
-        return DocFolder;
-    }
-
-    public int getMaxLogCount() {
-        return MaxLogCount;
-    }
-
-    public String getExceptionDir() {
-        return ExceptionDir;
+    public String getFolder() {
+        return Folder;
     }
 
     public File getLogFolder() {

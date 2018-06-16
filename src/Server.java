@@ -11,13 +11,12 @@ import java.net.Socket;
 
 public class Server {
     static final String END_OF_HEADER = "";
-
     private Server(int port, File file) {
         try {
 
             ServerSocket server = new ServerSocket(port);
             System.out.println("Server started on " + InetAddress.getLocalHost() + ":" + port);
-            //   System.out.println("Press ctrl+c to stop the server");
+            System.out.println("Press ctrl+c to stop the server");
             while (true) {
                 Socket ss = server.accept();
                 new Connection(ss, file);
@@ -36,8 +35,6 @@ public class Server {
                 if (config.getLogOutFormat().equals("txt")) ServerLog.fileTxt.close();
                 if (config.getLogOutFormat().equals("html")) ServerLog.fileHTML.close();
                 System.out.println("Logs closed");
-                if (config.checkLogCount(config.getMaxLogCount())) System.out.println("Logs cleared");
-                System.out.println("***Server stopped***");
                 Connection.conLogger.info("***Server stopped***");
             }));
             new Server(config.getPort(), config.getFile());
